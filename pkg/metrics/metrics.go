@@ -1,13 +1,8 @@
 package metrics
 
 import (
-	"compress/gzip"
 	"context"
 	"fmt"
-	"io"
-	"net"
-	"net/http"
-	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -15,12 +10,9 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/tools/cache"
-	"k8s.io/client-go/tools/clientcmd"
 	kcoll "k8s.io/kube-state-metrics/pkg/collectors"
 	"k8s.io/kube-state-metrics/pkg/metrics"
 	metricsstore "k8s.io/kube-state-metrics/pkg/metrics_store"
-
-	"github.com/operator-framework/operator-sdk/pkg/uclient"
 )
 
 // NewCollectors returns a collection of metrics in the namespaces provided, per the api/kind resource.

@@ -1,5 +1,14 @@
 package metrics
 
+import (
+	"compress/gzip"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"strings"
+)
+
 type MetricHandler struct {
 	c []*kcoll.Collector
 }

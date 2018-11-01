@@ -1,4 +1,4 @@
-package uclient
+package metrics
 
 import (
 	"fmt"
