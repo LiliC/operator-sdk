@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:2f9bad74bf4197615def62c64b29bfc5aeec01a1f3852805070963fc4d69b0b6"
+  name = "cloud.google.com/go"
+  packages = ["compute/metadata"]
+  pruneopts = ""
+  revision = "debcad1964693daf8ef4bc06292d7e828e075130"
+  version = "v0.31.0"
+
+[[projects]]
   digest = "1:8e47871087b94913898333f37af26732faaab30cdb41571136cf7aec9921dae7"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -393,6 +401,14 @@
   revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
 
 [[projects]]
+  digest = "1:6ab228f39a195cb1dab3564a0f27dc24a52bb3a19fa58dd2967f1e7b2482d82b"
+  name = "github.com/robfig/cron"
+  packages = ["."]
+  pruneopts = ""
+  revision = "b41be1df696709bb6395fe435af20370037c0b4c"
+  version = "v1.1"
+
+[[projects]]
   digest = "1:3962f553b77bf6c03fc07cd687a22dd3b00fe11aa14d31194f5505f5bb65cdc8"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -480,6 +496,7 @@
   name = "golang.org/x/net"
   packages = [
     "context",
+    "context/ctxhttp",
     "html",
     "html/atom",
     "http/httpguts",
@@ -489,6 +506,20 @@
   ]
   pruneopts = ""
   revision = "04a2e542c03f1d053ab3e4d6e5abcd4b66e2be8e"
+
+[[projects]]
+  branch = "master"
+  digest = "1:c41b4071000548c12aeba99452479bc0fb631dfb6a7fc2b7f686a487bd7a6248"
+  name = "golang.org/x/oauth2"
+  packages = [
+    ".",
+    "google",
+    "internal",
+    "jws",
+    "jwt",
+  ]
+  pruneopts = ""
+  revision = "8527f56f71077909d6ead7facfe18fbf05ebdf83"
 
 [[projects]]
   branch = "master"
@@ -545,6 +576,25 @@
   ]
   pruneopts = ""
   revision = "6adeb8aab2ded9eb693b831d5fd090c10a6ebdfa"
+
+[[projects]]
+  digest = "1:8c432632a230496c35a15cfdf441436f04c90e724ad99c8463ef0c82bbe93edb"
+  name = "google.golang.org/appengine"
+  packages = [
+    ".",
+    "internal",
+    "internal/app_identity",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/modules",
+    "internal/remote_api",
+    "internal/urlfetch",
+    "urlfetch",
+  ]
+  pruneopts = ""
+  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:75fb3fcfc73a8c723efde7777b40e8e8ff9babf30d8c56160d01beffea8a95a6"
@@ -608,6 +658,7 @@
     "pkg/apis/apiextensions",
     "pkg/apis/apiextensions/v1beta1",
     "pkg/client/clientset/clientset/scheme",
+    "pkg/features",
   ]
   pruneopts = ""
   revision = "408db4a50408e2149acbd657bceb2480c13cb0a4"
@@ -668,6 +719,17 @@
   version = "kubernetes-1.11.2"
 
 [[projects]]
+  branch = "master"
+  digest = "1:307114f0d43e1f0b8ce6fba0ca3369b7270504e99fd9125a698b4ef0b6f686c6"
+  name = "k8s.io/apiserver"
+  packages = [
+    "pkg/features",
+    "pkg/util/feature",
+  ]
+  pruneopts = ""
+  revision = "f2e7e4864e403362f09eded9fb122b0f0b622c7c"
+
+[[projects]]
   digest = "1:da788b52eda4a8cd4c564a69051b029f310f4ec232cfa3ec0e49b80b0e7b6616"
   name = "k8s.io/client-go"
   packages = [
@@ -711,9 +773,11 @@
     "pkg/apis/clientauthentication/v1beta1",
     "pkg/version",
     "plugin/pkg/client/auth/exec",
+    "plugin/pkg/client/auth/gcp",
     "rest",
     "rest/watch",
     "restmapper",
+    "third_party/forked/golang/template",
     "tools/auth",
     "tools/cache",
     "tools/clientcmd",
@@ -733,6 +797,7 @@
     "util/flowcontrol",
     "util/homedir",
     "util/integer",
+    "util/jsonpath",
     "util/retry",
     "util/workqueue",
   ]
@@ -752,6 +817,35 @@
   revision = "e494cc58111187acad93e64529228a2fc0153e39"
 
 [[projects]]
+  branch = "master"
+  digest = "1:7cb0a5357082c49b4a375c4081645254f4669bb2d01ad3c3d76244713a4b73e5"
+  name = "k8s.io/kube-state-metrics"
+  packages = [
+    "pkg/collectors",
+    "pkg/constant",
+    "pkg/metrics",
+    "pkg/metrics_store",
+    "pkg/options",
+  ]
+  pruneopts = ""
+  revision = "6e7570bb1989da67b20160c9a0ec972e8a8c82df"
+
+[[projects]]
+  digest = "1:6061aa42761235df375f20fa4a1aa6d1845cba3687575f3adb2ef3f3bc540af5"
+  name = "k8s.io/kubernetes"
+  packages = [
+    "pkg/apis/core",
+    "pkg/apis/core/helper",
+    "pkg/apis/core/v1/helper",
+    "pkg/features",
+    "pkg/kubelet/apis",
+    "pkg/util/node",
+  ]
+  pruneopts = ""
+  revision = "17c77c7898218073f14c8d573582e8d2313dc740"
+  version = "v1.12.2"
+
+[[projects]]
   digest = "1:6cad2468c5831529b860a01f09032f6ff38202bc4f76332ef7ad74a993e4aa5a"
   name = "sigs.k8s.io/controller-runtime"
   packages = [
@@ -761,6 +855,7 @@
     "pkg/client/apiutil",
     "pkg/client/config",
     "pkg/controller",
+    "pkg/controller/controllerutil",
     "pkg/event",
     "pkg/handler",
     "pkg/internal/controller",
@@ -792,6 +887,7 @@
     "github.com/coreos/prometheus-operator/pkg/client/monitoring/v1",
     "github.com/ghodss/yaml",
     "github.com/markbates/inflect",
+    "github.com/pkg/errors",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/sergi/go-diff/diffmatchpatch",
@@ -815,16 +911,24 @@
     "k8s.io/apimachinery/pkg/util/net",
     "k8s.io/apimachinery/pkg/util/proxy",
     "k8s.io/apimachinery/pkg/util/wait",
+    "k8s.io/apimachinery/pkg/watch",
     "k8s.io/client-go/discovery/cached",
+    "k8s.io/client-go/dynamic",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/kubernetes/scheme",
+    "k8s.io/client-go/plugin/pkg/client/auth/gcp",
     "k8s.io/client-go/rest",
     "k8s.io/client-go/restmapper",
+    "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/clientcmd",
     "k8s.io/client-go/transport",
+    "k8s.io/kube-state-metrics/pkg/collectors",
+    "k8s.io/kube-state-metrics/pkg/metrics",
+    "k8s.io/kube-state-metrics/pkg/metrics_store",
     "sigs.k8s.io/controller-runtime/pkg/client",
     "sigs.k8s.io/controller-runtime/pkg/client/config",
     "sigs.k8s.io/controller-runtime/pkg/controller",
+    "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil",
     "sigs.k8s.io/controller-runtime/pkg/handler",
     "sigs.k8s.io/controller-runtime/pkg/manager",
     "sigs.k8s.io/controller-runtime/pkg/reconcile",
