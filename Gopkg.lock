@@ -817,8 +817,7 @@
   revision = "e494cc58111187acad93e64529228a2fc0153e39"
 
 [[projects]]
-  branch = "master"
-  digest = "1:7cb0a5357082c49b4a375c4081645254f4669bb2d01ad3c3d76244713a4b73e5"
+  digest = "1:4a30fed20702a747260eb35a015d2e6fde8a6cb4536a41e29003e95151a6f7f4"
   name = "k8s.io/kube-state-metrics"
   packages = [
     "pkg/collectors",
@@ -828,7 +827,8 @@
     "pkg/options",
   ]
   pruneopts = ""
-  revision = "6e7570bb1989da67b20160c9a0ec972e8a8c82df"
+  revision = "e05e244e4f3f7c2e0447b53ae37d041167e1fc60"
+  source = "github.com/LiliC/kube-state-metrics"
 
 [[projects]]
   digest = "1:6061aa42761235df375f20fa4a1aa6d1845cba3687575f3adb2ef3f3bc540af5"

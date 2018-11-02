@@ -18,7 +18,7 @@ import (
 // NewCollectors returns a collection of metrics in the namespaces provided, per the api/kind resource.
 // The metrics are registered in the custom generateStore function that needs to be defined.
 // Note: If namespaces are empty, all namespaces will be fetched.
-func NewCollectors(uc *UnstructuredClient,
+func NewCollectors(uc *Client,
 	namespaces []string,
 	api string,
 	kind string,

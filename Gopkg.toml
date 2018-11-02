@@ -30,3 +30,8 @@
   name = "sigs.k8s.io/controller-runtime"
   version = "v0.1.4"
 
+[[constraint]]
+  source = "github.com/LiliC/kube-state-metrics"
+  name = "k8s.io/kube-state-metrics"
+  revision = "e05e244e4f3f7c2e0447b53ae37d041167e1fc60"
+

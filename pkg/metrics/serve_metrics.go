@@ -7,6 +7,8 @@ import (
 	"net"
 	"net/http"
 	"strings"
+
+	kcoll "k8s.io/kube-state-metrics/pkg/collectors"
 )
 
 type MetricHandler struct {
@@ -38,7 +40,7 @@ func ServeMetrics(collectors []*kcoll.Collector) {
 	fmt.Println(http.ListenAndServe(listenAddress, mux))
 }
 
-func (m *metricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (m *MetricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	resHeader := w.Header()
 	var writer io.Writer = w
 
