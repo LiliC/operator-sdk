@@ -567,6 +567,14 @@
   version = "v2.0.1"
 
 [[projects]]
+  digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = ""
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   digest = "1:256484dbbcd271f9ecebc6795b2df8cad4c458dd0f5fd82a8c2fa0c29f233411"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -618,6 +626,14 @@
   ]
   pruneopts = ""
   revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
+
+[[projects]]
+  digest = "1:6ab228f39a195cb1dab3564a0f27dc24a52bb3a19fa58dd2967f1e7b2482d82b"
+  name = "github.com/robfig/cron"
+  packages = ["."]
+  pruneopts = ""
+  revision = "b41be1df696709bb6395fe435af20370037c0b4c"
+  version = "v1.1"
 
 [[projects]]
   digest = "1:67d5130351f71fe24139c6168dd2f8ab5fde543a1230754403d84173bb25a097"
@@ -1208,6 +1224,20 @@
   revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
 
 [[projects]]
+  digest = "1:ab51d2c1ccf10d61eb54bfb99348bcbcd17adaaf4cb2930b31356284141ea000"
+  name = "k8s.io/kube-state-metrics"
+  packages = [
+    "pkg/collectors",
+    "pkg/constant",
+    "pkg/metrics",
+    "pkg/metrics_store",
+    "pkg/options",
+  ]
+  pruneopts = ""
+  revision = "c56e5eec1e62a78ff41fd26b4b0636a11ac1da2d"
+  version = "v1.5.0-beta.0"
+
+[[projects]]
   digest = "1:49553260d1b581e741aac6f8ba6a898921538cf40d3809bdf938692d3fa6dd6a"
   name = "k8s.io/kubernetes"
   packages = [
@@ -1426,6 +1456,7 @@
     "github.com/markbates/inflect",
     "github.com/martinlindhe/base36",
     "github.com/pborman/uuid",
+    "github.com/pkg/errors",
     "github.com/prometheus/client_golang/prometheus/promhttp",
     "github.com/sergi/go-diff/diffmatchpatch",
     "github.com/sirupsen/logrus",
@@ -1457,14 +1488,17 @@
     "k8s.io/apimachinery/pkg/util/sets",
     "k8s.io/apimachinery/pkg/util/wait",
     "k8s.io/apimachinery/pkg/util/yaml",
+    "k8s.io/apimachinery/pkg/watch",
     "k8s.io/cli-runtime/pkg/genericclioptions/resource",
     "k8s.io/client-go/discovery",
     "k8s.io/client-go/discovery/cached",
+    "k8s.io/client-go/dynamic",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/kubernetes/scheme",
     "k8s.io/client-go/plugin/pkg/client/auth/gcp",
     "k8s.io/client-go/rest",
     "k8s.io/client-go/restmapper",
+    "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/clientcmd",
     "k8s.io/client-go/tools/clientcmd/api",
     "k8s.io/client-go/transport",
@@ -1479,6 +1513,9 @@
     "k8s.io/helm/pkg/storage/driver",
     "k8s.io/helm/pkg/tiller",
     "k8s.io/helm/pkg/tiller/environment",
+    "k8s.io/kube-state-metrics/pkg/collectors",
+    "k8s.io/kube-state-metrics/pkg/metrics",
+    "k8s.io/kube-state-metrics/pkg/metrics_store",
     "sigs.k8s.io/controller-runtime/pkg/cache",
     "sigs.k8s.io/controller-runtime/pkg/client",
     "sigs.k8s.io/controller-runtime/pkg/client/config",
