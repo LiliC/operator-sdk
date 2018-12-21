@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
@@ -28,14 +29,14 @@ import (
 	metricsstore "k8s.io/kube-state-metrics/pkg/metrics_store"
 )
 
-// NewCollectors returns a collection of metrics in the namespaces provided, per the api/kind resource.
+// NewCollector returns a collection of metrics in the namespaces provided, per the api/kind resource.
 // The metrics are registered in the custom generateStore function that needs to be defined.
 // Note: If namespaces are empty, all namespaces will be fetched.
-func New(uc *Client,
+func NewCollector(uc *Client,
 	namespaces []string,
 	api string,
 	kind string,
-	generateStore func(obj interface{}) []*metrics.Metric) (collectors []*kcoll.Collector) {
+	generateStore []metrics.FamilyGenerator) (collectors []*kcoll.Collector) {
 
 	// TODO: what if namespaces are empty.
 	// fetch all namespaces instead
@@ -46,13 +47,46 @@ func New(uc *Client,
 			fmt.Println(err)
 			return
 		}
-		store := metricsstore.NewMetricsStore(generateStore)
+		//TODO: what are headers now?
+		var headers []string
+		filteredMetricFamilies := filterMetricFamilies(generateStore)
+		composedMetricGenFuncs := composeMetricGenFuncs(filteredMetricFamilies)
+
+		store := metricsstore.NewMetricsStore(headers, composedMetricGenFuncs)
 		reflectorPerNamespace(context.TODO(), dclient, &unstructured.Unstructured{}, store, ns)
 		collector := kcoll.NewCollector(store)
 		collectors = append(collectors, collector)
 	}
 
 	return
+}
+
+func filterMetricFamilies(families []metrics.FamilyGenerator) []metrics.FamilyGenerator {
+	filtered := []metrics.FamilyGenerator{}
+
+	for _, f := range families {
+		filtered = append(filtered, f)
+	}
+
+	return filtered
+}
+
+func composeMetricGenFuncs(families []metrics.FamilyGenerator) func(obj interface{}) []metricsstore.FamilyStringer {
+	funcs := []func(obj interface{}) metrics.Family{}
+
+	for _, f := range families {
+		funcs = append(funcs, f.GenerateFunc)
+	}
+
+	return func(obj interface{}) []metricsstore.FamilyStringer {
+		families := make([]metricsstore.FamilyStringer, len(funcs))
+
+		for i, f := range funcs {
+			families[i] = f(obj)
+		}
+
+		return families
+	}
 }
 
 func reflectorPerNamespace(
