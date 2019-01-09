@@ -28,6 +28,7 @@ const (
 	PkgDir        = "pkg"
 	ApisDir       = PkgDir + filePathSep + "apis"
 	ControllerDir = PkgDir + filePathSep + "controller"
+	MetricsDir    = PkgDir + filePathSep + "metrics"
 	BuildDir      = "build"
 	BuildTestDir  = BuildDir + filePathSep + "test-framework"
 	BuildBinDir   = BuildDir + filePathSep + "_output" + filePathSep + "bin"

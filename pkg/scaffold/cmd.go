@@ -45,6 +45,7 @@ import (
 
 	"{{ .Repo }}/pkg/apis"
 	"{{ .Repo }}/pkg/controller"
+	"{{ .Repo }}/pkg/metrics"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
@@ -60,28 +61,6 @@ import (
 )
 
 var log = logf.Log.WithName("cmd")
-
-var (
-    MemcachedMetricFamilies = []ksmetrics.FamilyGenerator{
-        ksmetrics.FamilyGenerator{
-            Name: "memcached_service_info",
-            Type: ksmetrics.MetricTypeGauge,
-            Help: "Information about the operator replica.",
-            GenerateFunc: func(obj interface{}) ksmetrics.Family {
-                crd := obj.(*unstructured.Unstructured)
-
-                return ksmetrics.Family{
-                    &ksmetrics.Metric{
-                        Name:        "memcached_service_info",
-                        Value:       1,
-                        LabelKeys:   []string{"namespace", "memcached"},
-                        LabelValues: []string{crd.GetNamespace(), crd.GetName()},
-                    },
-                }
-            },
-        },
-    }
-)
 
 func printVersion() {
 	log.Info(fmt.Sprintf("Go Version: %s", runtime.Version()))
@@ -116,15 +95,7 @@ func main() {
 	// Become the leader before proceeding
 	leader.Become(context.TODO(), "{{ .ProjectName }}-lock")
 
-    // operator-specific-metrics aka kube-metrics
-    uc := metrics.NewForConfig(cfg)
-    resource := "metric.example.com/v1alpha1"
-    kind := "MetricService"
-
-    c := kubemetrics.NewCollector(uc, []string{"default"}, resource, kind, MemcachedMetricFamilies)
-
-    //prometheus.MustRegister(c)
-    kubemetrics.ServeMetrics(c)
+	metrics.ServeOperatorSpecificMetrics(cfg)
 
 	r := ready.NewFileReady()
 	err = r.Set()

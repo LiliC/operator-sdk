@@ -90,6 +90,7 @@ func apiRun(cmd *cobra.Command, args []string) {
 		&scaffold.Doc{Resource: r},
 		&scaffold.Cr{Resource: r},
 		&scaffold.Crd{Resource: r},
+		&scaffold.Metrics{Resource: r},
 	)
 	if err != nil {
 		log.Fatalf("add scaffold failed: (%v)", err)
