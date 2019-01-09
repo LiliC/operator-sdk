@@ -47,10 +47,12 @@ import (
 	"{{ .Repo }}/pkg/controller"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
+	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
 	"github.com/operator-framework/operator-sdk/pkg/ready"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	ksmetrics "k8s.io/kube-state-metrics/pkg/metrics"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
@@ -119,10 +121,10 @@ func main() {
     resource := "metric.example.com/v1alpha1"
     kind := "MetricService"
 
-    c := metrics.NewCollector(uc, []string{"default"}, resource, kind, MemcachedMetricFamilies)
+    c := kubemetrics.NewCollector(uc, []string{"default"}, resource, kind, MemcachedMetricFamilies)
 
     //prometheus.MustRegister(c)
-    metrics.ServeMetrics(c)
+    kubemetrics.ServeMetrics(c)
 
 	r := ready.NewFileReady()
 	err = r.Set()
