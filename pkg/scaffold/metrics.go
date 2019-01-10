@@ -44,6 +44,8 @@ const metricsPkgTemplate = `
 package metrics
 
 import (
+	"fmt"
+
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
     "k8s.io/client-go/rest"
@@ -52,11 +54,11 @@ import (
 
 var resource = "{{ .Resource.APIVersion }}"
 var kind = "{{ .Resource.Kind }}"
-
+var metricName = "{{ .Resource.LowerKind }}_info"
 var (
     MetricFamilies = []ksmetrics.FamilyGenerator{
         ksmetrics.FamilyGenerator{
-            Name: "{{ .Resource.LowerKind }}_info",
+            Name: metricName,
             Type: ksmetrics.MetricTypeGauge,
             Help: "Information about the {{ .Resource.Kind }} operator replica.",
             GenerateFunc: func(obj interface{}) ksmetrics.Family {
@@ -64,7 +66,7 @@ var (
 
                 return ksmetrics.Family{
                     &ksmetrics.Metric{
-                        Name:        "{{ .Resource.LowerKind }}_info",
+                        Name:        metricName,
                         Value:       1,
                         LabelKeys:   []string{"namespace", "{{ .Resource.LowerKind }}"},
                         LabelValues: []string{crd.GetNamespace(), crd.GetName()},
@@ -78,10 +80,8 @@ var (
 func ServeOperatorSpecificMetrics(cfg *rest.Config) {
     uc := kubemetrics.NewForConfig(cfg)
 
-	// TODO: replace namespaces? 
     c := kubemetrics.NewCollector(uc, []string{"default"}, resource, kind, MetricFamilies)
 
-    //prometheus.MustRegister(c)
-    kubemetrics.ServeMetrics(c)
+    kubemetrics.ServeMetrics(c, "0.0.0.0", 8181)
 }
 `

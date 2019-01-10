@@ -89,6 +89,8 @@ func main() {
 
 	// Become the leader before proceeding
 	leader.Become(context.TODO(), "app-operator-lock")
+	
+	metrics.ServeOperatorSpecificMetrics(cfg)
 
 	r := ready.NewFileReady()
 	err = r.Set()
