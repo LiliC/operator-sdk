@@ -15,25 +15,33 @@
 package kubemetrics
 
 import (
-	"compress/gzip"
 	"fmt"
-	"io"
+	"log"
 	"net"
 	"net/http"
-	"strings"
+	"strconv"
 
-	kcoll "k8s.io/kube-state-metrics/pkg/collectors"
+	kcollectors "k8s.io/kube-state-metrics/pkg/collectors"
 )
 
-type MetricHandler struct {
-	c []*kcoll.Collector
-}
+const (
+	metricsPath = "/metrics"
+	healthzPath = "/healthz"
+)
 
-func ServeMetrics(collectors []*kcoll.Collector) {
-	listenAddress := net.JoinHostPort("0.0.0.0", "8080")
+// TODO: How about accepting an interface Collector instead?
+func ServeMetrics(collectors []*kcollectors.Collector, host string, port int) {
+	// Address to listen on for web interface and telemetry
+	listenAddress := net.JoinHostPort(host, strconv.Itoa(port))
+
+	fmt.Printf("Starting metrics server: %s", listenAddress)
+
 	mux := http.NewServeMux()
-	mux.Handle("/metrics", &MetricHandler{collectors})
-	mux.HandleFunc("/healtz", func(w http.ResponseWriter, r *http.Request) {
+
+	// Add metricsPath
+	mux.Handle(metricsPath, &metricHandler{collectors})
+	// Add healthzPath
+	mux.HandleFunc(healthzPath, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("ok"))
 	})
@@ -44,40 +52,27 @@ func ServeMetrics(collectors []*kcoll.Collector) {
              <body>
              <h1>Kube Metrics</h1>
 			 <ul>
-             <li><a href='` + "/metrics" + `'>metrics</a></li>
-             <li><a href='` + "/healthz" + `'>healthz</a></li>
+             <li><a href='` + metricsPath + `'>metrics</a></li>
+             <li><a href='` + healthzPath + `'>healthz</a></li>
 			 </ul>
              </body>
              </html>`))
 	})
-
-	fmt.Println(http.ListenAndServe(listenAddress, mux))
+	log.Fatal(http.ListenAndServe(listenAddress, mux))
 }
 
-func (m *MetricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	resHeader := w.Header()
-	var writer io.Writer = w
+type metricHandler struct {
+	collectors []*kcollectors.Collector
+}
 
+func (m *metricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	resHeader := w.Header()
 	resHeader.Set("Content-Type", `text/plain; version=`+"0.0.4")
 
-	// Gzip response if requested. Taken from
-	// github.com/prometheus/client_golang/prometheus/promhttp.decorateWriter.
-	reqHeader := r.Header.Get("Accept-Encoding")
-	parts := strings.Split(reqHeader, ",")
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		if part == "gzip" || strings.HasPrefix(part, "gzip;") {
-			writer = gzip.NewWriter(writer)
-			resHeader.Set("Content-Encoding", "gzip")
-		}
+	fmt.Fprintf(w, "Hello world")
+
+	for _, c := range m.collectors {
+		c.Collect(w)
 	}
 
-	for _, c := range m.c {
-		c.Collect(writer)
-	}
-
-	// In case we gziped the response, we have to close the writer.
-	if closer, ok := writer.(io.Closer); ok {
-		closer.Close()
-	}
 }

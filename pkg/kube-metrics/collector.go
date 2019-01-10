@@ -17,6 +17,7 @@ package kubemetrics
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -37,7 +38,7 @@ func NewCollector(uc *Client,
 	api string,
 	kind string,
 	generateStore []metrics.FamilyGenerator) (collectors []*kcoll.Collector) {
-
+	fmt.Println("new collector")
 	// TODO: what if namespaces are empty.
 	// fetch all namespaces instead
 	for _, ns := range namespaces {
@@ -47,18 +48,40 @@ func NewCollector(uc *Client,
 			fmt.Println(err)
 			return
 		}
-		//TODO: what are headers now?
-		var headers []string
+		fmt.Println("before headers")
 		filteredMetricFamilies := filterMetricFamilies(generateStore)
 		composedMetricGenFuncs := composeMetricGenFuncs(filteredMetricFamilies)
-
+		headers := extractMetricFamilyHeaders(filteredMetricFamilies)
 		store := metricsstore.NewMetricsStore(headers, composedMetricGenFuncs)
 		reflectorPerNamespace(context.TODO(), dclient, &unstructured.Unstructured{}, store, ns)
 		collector := kcoll.NewCollector(store)
+		fmt.Printf("%#+v", collector)
 		collectors = append(collectors, collector)
 	}
 
 	return
+}
+
+func extractMetricFamilyHeaders(families []metrics.FamilyGenerator) []string {
+	headers := make([]string, len(families))
+
+	for i, f := range families {
+		header := strings.Builder{}
+
+		header.WriteString("# HELP ")
+		header.WriteString(f.Name)
+		header.WriteByte(' ')
+		header.WriteString(f.Help)
+		header.WriteByte('\n')
+		header.WriteString("# TYPE ")
+		header.WriteString(f.Name)
+		header.WriteByte(' ')
+		header.WriteString(string(f.Type))
+
+		headers[i] = header.String()
+	}
+
+	return headers
 }
 
 func filterMetricFamilies(families []metrics.FamilyGenerator) []metrics.FamilyGenerator {
@@ -67,7 +90,8 @@ func filterMetricFamilies(families []metrics.FamilyGenerator) []metrics.FamilyGe
 	for _, f := range families {
 		filtered = append(filtered, f)
 	}
-
+	fmt.Println("filtered")
+	fmt.Printf("%#+v", filtered)
 	return filtered
 }
 
