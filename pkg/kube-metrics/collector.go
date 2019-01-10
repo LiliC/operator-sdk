@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -41,6 +42,14 @@ func NewCollector(uc *Client,
 	fmt.Println("new collector")
 	// TODO: what if namespaces are empty.
 	// fetch all namespaces instead
+
+	// add current namespace to the list of ns
+	namespace, err := k8sutil.GetWatchNamespace()
+	if err != nil {
+		fmt.Printf("failed to get ns: (%v)", err)
+	}
+	namespaces = append(namespace, namespace)
+
 	for _, ns := range namespaces {
 		dclient, err := uc.ClientFor(api, kind, ns)
 		if err != nil {

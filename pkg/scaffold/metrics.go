@@ -79,8 +79,9 @@ var (
 
 func ServeOperatorSpecificMetrics(cfg *rest.Config) {
     uc := kubemetrics.NewForConfig(cfg)
-
-    c := kubemetrics.NewCollector(uc, []string{"default"}, resource, kind, MetricFamilies)
+	// override to include other ns
+	ns := []{""}
+    c := kubemetrics.NewCollector(uc, ns, resource, kind, MetricFamilies)
 
     kubemetrics.ServeMetrics(c, "0.0.0.0", 8181)
 }
