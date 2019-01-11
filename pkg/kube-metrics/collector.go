@@ -48,7 +48,7 @@ func NewCollector(uc *Client,
 	if err != nil {
 		fmt.Printf("failed to get ns: (%v)", err)
 	}
-	namespaces = append(namespace, namespace)
+	namespaces = append(namespaces, namespace)
 
 	for _, ns := range namespaces {
 		dclient, err := uc.ClientFor(api, kind, ns)
