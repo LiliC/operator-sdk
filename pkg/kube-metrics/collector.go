@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/tools/cache"
-	kcoll "k8s.io/kube-state-metrics/pkg/collectors"
+	kcoll "k8s.io/kube-state-metrics/pkg/collector"
 	"k8s.io/kube-state-metrics/pkg/metrics"
 	metricsstore "k8s.io/kube-state-metrics/pkg/metrics_store"
 )

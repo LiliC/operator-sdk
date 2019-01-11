@@ -628,14 +628,6 @@
   revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
 
 [[projects]]
-  digest = "1:6ab228f39a195cb1dab3564a0f27dc24a52bb3a19fa58dd2967f1e7b2482d82b"
-  name = "github.com/robfig/cron"
-  packages = ["."]
-  pruneopts = ""
-  revision = "b41be1df696709bb6395fe435af20370037c0b4c"
-  version = "v1.1"
-
-[[projects]]
   digest = "1:67d5130351f71fe24139c6168dd2f8ab5fde543a1230754403d84173bb25a097"
   name = "github.com/russross/blackfriday"
   packages = ["."]
@@ -1224,18 +1216,16 @@
   revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
 
 [[projects]]
-  digest = "1:ab51d2c1ccf10d61eb54bfb99348bcbcd17adaaf4cb2930b31356284141ea000"
+  digest = "1:0e6a733e17d273ffedaf7970d180f81e72a5bef9a8a62f484ad5e8ab25e85a55"
   name = "k8s.io/kube-state-metrics"
   packages = [
-    "pkg/collectors",
-    "pkg/constant",
+    "pkg/collector",
     "pkg/metrics",
     "pkg/metrics_store",
-    "pkg/options",
   ]
   pruneopts = ""
-  revision = "c56e5eec1e62a78ff41fd26b4b0636a11ac1da2d"
-  version = "v1.5.0-beta.0"
+  revision = "80e926ab8aa71ab8882b702a11713111ddda8479"
+  source = "github.com/lilic/kube-state-metrics"
 
 [[projects]]
   digest = "1:49553260d1b581e741aac6f8ba6a898921538cf40d3809bdf938692d3fa6dd6a"
@@ -1513,7 +1503,7 @@
     "k8s.io/helm/pkg/storage/driver",
     "k8s.io/helm/pkg/tiller",
     "k8s.io/helm/pkg/tiller/environment",
-    "k8s.io/kube-state-metrics/pkg/collectors",
+    "k8s.io/kube-state-metrics/pkg/collector",
     "k8s.io/kube-state-metrics/pkg/metrics",
     "k8s.io/kube-state-metrics/pkg/metrics_store",
     "sigs.k8s.io/controller-runtime/pkg/cache",

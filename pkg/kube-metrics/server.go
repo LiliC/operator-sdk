@@ -21,7 +21,7 @@ import (
 	"net/http"
 	"strconv"
 
-	kcollectors "k8s.io/kube-state-metrics/pkg/collectors"
+	kcollectors "k8s.io/kube-state-metrics/pkg/collector"
 )
 
 const (
