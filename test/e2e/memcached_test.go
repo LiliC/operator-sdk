@@ -411,7 +411,7 @@ func memchachedOperatorMetricsTest(t *testing.T, f *framework.Framework, ctx *fr
 	opts.SetFieldSelector("status.phase=Running")
 	err = f.Client.List(context.TODO(), &opts, &pods)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// query the metrics on port 8181 for example-memcached -> name to match the metric name.
@@ -558,13 +558,14 @@ func MemcachedCluster(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = memcachedLeaderTest(t, framework.Global, ctx); err != nil {
+	/*if err = memcachedLeaderTest(t, framework.Global, ctx); err != nil {
 		t.Fatal(err)
 	}
 
 	if err = memcachedScaleTest(t, framework.Global, ctx); err != nil {
 		t.Fatal(err)
 	}
+	*/
 
 	if err = memchachedOperatorMetricsTest(t, framework.Global, ctx); err != nil {
 		t.Fatal(err)
