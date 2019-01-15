@@ -17,7 +17,6 @@ package kubemetrics
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -33,7 +32,7 @@ import (
 
 // NewCollector returns a collection of metrics in the namespaces provided, per the api/kind resource.
 // The metrics are registered in the custom generateStore function that needs to be defined.
-// Note: If namespaces are empty, all namespaces will be fetched.
+// Note: If namespaces are empty, current namespace will be "guessed".
 func NewCollector(uc *Client,
 	namespaces []string,
 	api string,
@@ -53,73 +52,18 @@ func NewCollector(uc *Client,
 	for _, ns := range namespaces {
 		dclient, err := uc.ClientFor(api, kind, ns)
 		if err != nil {
-			// TODO: log instead
 			fmt.Println(err)
 			return
 		}
-		fmt.Println("before headers")
-		filteredMetricFamilies := filterMetricFamilies(generateStore)
-		composedMetricGenFuncs := composeMetricGenFuncs(filteredMetricFamilies)
-		headers := extractMetricFamilyHeaders(filteredMetricFamilies)
+		composedMetricGenFuncs := kcoll.ComposeMetricGenFuncs(generateStore)
+		headers := kcoll.ExtractMetricFamilyHeaders(generateStore)
 		store := metricsstore.NewMetricsStore(headers, composedMetricGenFuncs)
 		reflectorPerNamespace(context.TODO(), dclient, &unstructured.Unstructured{}, store, ns)
 		collector := kcoll.NewCollector(store)
-		fmt.Printf("%#+v", collector)
 		collectors = append(collectors, collector)
 	}
 
 	return
-}
-
-func extractMetricFamilyHeaders(families []metrics.FamilyGenerator) []string {
-	headers := make([]string, len(families))
-
-	for i, f := range families {
-		header := strings.Builder{}
-
-		header.WriteString("# HELP ")
-		header.WriteString(f.Name)
-		header.WriteByte(' ')
-		header.WriteString(f.Help)
-		header.WriteByte('\n')
-		header.WriteString("# TYPE ")
-		header.WriteString(f.Name)
-		header.WriteByte(' ')
-		header.WriteString(string(f.Type))
-
-		headers[i] = header.String()
-	}
-
-	return headers
-}
-
-func filterMetricFamilies(families []metrics.FamilyGenerator) []metrics.FamilyGenerator {
-	filtered := []metrics.FamilyGenerator{}
-
-	for _, f := range families {
-		filtered = append(filtered, f)
-	}
-	fmt.Println("filtered")
-	fmt.Printf("%#+v", filtered)
-	return filtered
-}
-
-func composeMetricGenFuncs(families []metrics.FamilyGenerator) func(obj interface{}) []metricsstore.FamilyStringer {
-	funcs := []func(obj interface{}) metrics.Family{}
-
-	for _, f := range families {
-		funcs = append(funcs, f.GenerateFunc)
-	}
-
-	return func(obj interface{}) []metricsstore.FamilyStringer {
-		families := make([]metricsstore.FamilyStringer, len(funcs))
-
-		for i, f := range funcs {
-			families[i] = f(obj)
-		}
-
-		return families
-	}
 }
 
 func reflectorPerNamespace(
