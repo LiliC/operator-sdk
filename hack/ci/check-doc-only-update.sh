@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
-# Start by checking that $TRAVIS_COMMIT_RANGE is a valid range. The range may
-# not be reachable if a PR has been forced pushed between the Travis job has
-# started and when it clones the git repository.
-if [ "$TRAVIS_COMMIT_RANGE" != "" ] && ! git rev-list --quiet $TRAVIS_COMMIT_RANGE; then
-  echo "Maybe the PR was forced pushed?"
+# Make sure the TRAVIS_COMMIT_RANGE is valid, by catching any errors and exiting.
+if [ "$TRAVIS_COMMIT_RANGE" != "" ] || ! git rev-list --quiet $TRAVIS_COMMIT_RANGE; then
+  echo "Failed to check the commit range is valid."
   exit 1
 fi
 
