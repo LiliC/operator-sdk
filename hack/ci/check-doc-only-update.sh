@@ -2,6 +2,7 @@
 
 set -ex
 
+
 # Make sure the TRAVIS_COMMIT_RANGE is valid, by catching any errors and exiting.
 if [ "$TRAVIS_COMMIT_RANGE" != "" ] || ! git rev-list --quiet $TRAVIS_COMMIT_RANGE; then
   echo "Failed to check the commit range is valid."
