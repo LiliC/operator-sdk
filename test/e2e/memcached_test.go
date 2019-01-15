@@ -374,6 +374,83 @@ func memcachedScaleTest(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	return e2eutil.WaitForDeployment(t, f.KubeClient, namespace, "example-memcached", 4, retryInterval, timeout)
 }
 
+func memchachedOperatorMetricsTest(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
+	// create example-memcached yaml file
+	name := "example-memcached"
+
+	filename := "deploy/cr.yaml"
+	err := ioutil.WriteFile(filename,
+		[]byte(crYAML),
+		fileutil.DefaultFileMode)
+	if err != nil {
+		return err
+	}
+
+	// create memcached custom resource
+	framework.Global.NamespacedManPath = &filename
+	err = ctx.InitializeClusterResources(&framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
+	if err != nil {
+		return err
+	}
+	t.Log("Created cr")
+
+	namespace, err := ctx.GetNamespace()
+	if err != nil {
+		return err
+	}
+	// wait for example-memcached to reach 3 replicas
+	err = e2eutil.WaitForDeployment(t, f.KubeClient, namespace, name, 3, retryInterval, timeout)
+	if err != nil {
+		return err
+	}
+
+	// get operator pods
+	pods := v1.PodList{}
+	opts := client.ListOptions{Namespace: namespace}
+	opts.SetLabelSelector("name=memcached-operator")
+	opts.SetFieldSelector("status.phase=Running")
+	err = f.Client.List(context.TODO(), &opts, &pods)
+	if err != nil {
+		return nil, err
+	}
+
+	// query the metrics on port 8181 for example-memcached -> name to match the metric name.
+	// first kubectl port-forward newosm-f59668bcf-jxzm8 8181:8181
+	podName := ""
+	for _, pod := range pods.Items {
+		podName = pod.Name
+	}
+	cmd := exec.Command("kubectl", "port-forward", podName, "8181:8181")
+	stderr, err := os.Create("stderr.txt")
+	if err != nil {
+		t.Fatalf("failed to create stderr.txt: %v", err)
+	}
+	cmd.Stderr = stderr
+	defer stderr.Close()
+
+	err = cmd.Start()
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
+	ctx.AddCleanupFn(func() error { return cmd.Process.Signal(os.Interrupt) })
+
+	// now curl endpoint http://0.0.0.0:8181/metrics
+
+	cmdCurl := exec.Command("curl", "http://0.0.0.0:8181/metrics")
+	var stdoutCurl, stderrCurl bytes.Buffer
+	cmdCurl.Stdout = &stdoutCurl
+	cmdCurl.Stderr = &stderrCurl
+	err = cmdCurl.Run()
+	if err != nil {
+		t.Fatalf("cmdCurl.Run() failed with %s\n", err)
+	}
+	outStr, errStr := string(stdoutCurl.Bytes()), string(stderrCurl.Bytes())
+	fmt.Println("metrics output")
+	fmt.Printf("out:\n%s\nerr:\n%s\n", outStr, errStr)
+
+	return nil
+}
+
 func MemcachedLocal(t *testing.T) {
 	// get global framework variables
 	ctx := framework.NewTestCtx(t)
@@ -486,6 +563,10 @@ func MemcachedCluster(t *testing.T) {
 	}
 
 	if err = memcachedScaleTest(t, framework.Global, ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = memchachedOperatorMetricsTest(t, framework.Global, ctx); err != nil {
 		t.Fatal(err)
 	}
 }
