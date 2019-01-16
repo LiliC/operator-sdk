@@ -65,5 +65,5 @@
   source = "github.com/lilic/kube-state-metrics"
   name = "k8s.io/kube-state-metrics"
   # The version rule is used for a specific release and the master branch for in between releases.
-  revision = "f502c7f1588dc0643a5670e25aaff611b80fb6b0"  
+  revision = "0584ffe2b6dcc3693fd8c7a1b3fd7a7acec3c963"  
   # version = "=v0.3.0" #osdk_version_annotation
