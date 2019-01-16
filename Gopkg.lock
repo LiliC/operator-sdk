@@ -1216,15 +1216,16 @@
   revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
 
 [[projects]]
-  digest = "1:0e6a733e17d273ffedaf7970d180f81e72a5bef9a8a62f484ad5e8ab25e85a55"
+  digest = "1:15d36a9918eaa4b084dcf55a9dd5983c76f3db678c59fd24b1f3705ba6b4e52d"
   name = "k8s.io/kube-state-metrics"
   packages = [
     "pkg/collector",
     "pkg/metrics",
     "pkg/metrics_store",
+    "pkg/whiteblacklist",
   ]
   pruneopts = ""
-  revision = "80e926ab8aa71ab8882b702a11713111ddda8479"
+  revision = "f502c7f1588dc0643a5670e25aaff611b80fb6b0"
   source = "github.com/lilic/kube-state-metrics"
 
 [[projects]]
