@@ -87,9 +87,11 @@ required = [
   version = "=v0.1.8"
 
 [[constraint]]
+  source = "github.com/lilic/operator-sdk"
   name = "github.com/operator-framework/operator-sdk"
   # The version rule is used for a specific release and the master branch for in between releases.
-  branch = "master" #osdk_branch_annotation
+  #branch = "master" #osdk_branch_annotation
+  revision = "3e239c401dbe3a8a9273ff693aa32e02c76ce859"
   # version = "=v0.3.0" #osdk_version_annotation
 
 [[constraint]]
