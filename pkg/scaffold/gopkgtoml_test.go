@@ -84,10 +84,21 @@ required = [
   branch = "master" #osdk_branch_annotation
   # version = "=v0.3.0" #osdk_version_annotation
 
+[[constraint]]
+  source = "github.com/lilic/kube-state-metrics"
+  name = "k8s.io/kube-state-metrics"
+  # The version rule is used for a specific release and the master branch for in between releases.
+  revision = "0584ffe2b6dcc3693fd8c7a1b3fd7a7acec3c963"  
+  # version = "=v0.3.0" #osdk_version_annotation
+
 [prune]
   go-tests = true
   non-go = true
 
+  [[prune.project]]
+    name = "k8s.io/kube-state-metrics"
+    unused-packages = true
+  
   [[prune.project]]
     name = "k8s.io/code-generator"
     non-go = false

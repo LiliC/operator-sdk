@@ -44,6 +44,7 @@ import (
 
 	"github.com/example-inc/app-operator/pkg/apis"
 	"github.com/example-inc/app-operator/pkg/controller"
+	"github.com/example-inc/app-operator/pkg/metrics"
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
 	"github.com/operator-framework/operator-sdk/pkg/ready"
@@ -89,7 +90,7 @@ func main() {
 
 	// Become the leader before proceeding
 	leader.Become(context.TODO(), "app-operator-lock")
-	
+
 	metrics.ServeOperatorSpecificMetrics(cfg)
 
 	r := ready.NewFileReady()
