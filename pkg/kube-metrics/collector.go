@@ -32,7 +32,7 @@ import (
 
 // NewCollector returns a collection of metrics in the namespaces provided, per the api/kind resource.
 // The metrics are registered in the custom generateStore function that needs to be defined.
-// Note: If namespaces are empty, current namespace will be "guessed".
+// Note: If namespaces are empty, current namespace all namespaces will be taken.
 func NewCollector(uc *Client,
 	namespaces []string,
 	api string,
@@ -47,6 +47,7 @@ func NewCollector(uc *Client,
 	if err != nil {
 		fmt.Printf("failed to get ns: (%v)", err)
 	}
+
 	namespaces = append(namespaces, namespace)
 
 	for _, ns := range namespaces {
