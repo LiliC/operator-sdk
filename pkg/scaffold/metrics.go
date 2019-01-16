@@ -35,17 +35,14 @@ func (s *Metrics) GetInput() (input.Input, error) {
 		s.Path = filepath.Join(MetricsDir, MetricsFile)
 	}
 	// Do not overwrite this file if it exists.
-	s.IfExistsAction = input.Skip
+	// s.IfExistsAction = input.Skip
 	s.TemplateBody = metricsPkgTemplate
 	return s.Input, nil
 }
 
-const metricsPkgTemplate = `
-package metrics
+const metricsPkgTemplate = `package metrics
 
 import (
-	"fmt"
-
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
     "k8s.io/client-go/rest"
@@ -80,7 +77,7 @@ var (
 func ServeOperatorSpecificMetrics(cfg *rest.Config) {
     uc := kubemetrics.NewForConfig(cfg)
 	// override to include other ns
-	ns := []{""}
+	ns := []string{}
     c := kubemetrics.NewCollector(uc, ns, resource, kind, MetricFamilies)
 
     kubemetrics.ServeMetrics(c, "0.0.0.0", 8181)
