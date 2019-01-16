@@ -83,7 +83,7 @@ required = [
   name = "github.com/operator-framework/operator-sdk"
   # The version rule is used for a specific release and the master branch for in between releases.
   #branch = "master" #osdk_branch_annotation
-  revision = "3e239c401dbe3a8a9273ff693aa32e02c76ce859"
+  revision = "b418402cad947f3632f00cb8475792e42306cb85"
   # version = "=v0.3.0" #osdk_version_annotation
 
 [[constraint]]
