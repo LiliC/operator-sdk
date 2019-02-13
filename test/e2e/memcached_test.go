@@ -36,10 +36,13 @@ import (
 	framework "github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
 
+	"github.com/prometheus/prometheus/util/promlint"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -529,6 +532,10 @@ func MemcachedCluster(t *testing.T) {
 	if err = memcachedScaleTest(t, framework.Global, ctx); err != nil {
 		t.Fatal(err)
 	}
+
+	if err = memcachedMetricsTest(t, framework.Global, ctx); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func MemcachedClusterTest(t *testing.T) {
@@ -573,4 +580,85 @@ func MemcachedClusterTest(t *testing.T) {
 	if err != nil {
 		t.Fatalf("In-cluster test failed: %v\nCommand Output:\n%s", err, string(cmdOut))
 	}
+}
+
+func memcachedMetricsTest(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
+	operatorName := "memcached-operator"
+	namespace, err := ctx.GetNamespace()
+	if err != nil {
+		return err
+	}
+
+	// Make sure metrics Service exists
+	s := v1.Service{}
+	err = f.Client.Get(context.TODO(), types.NamespacedName{Name: operatorName, Namespace: namespace}, &s)
+	if err != nil {
+		return fmt.Errorf("could not get metrics Service: (%v)", err)
+	}
+
+	// Get operator pod
+	pods := v1.PodList{}
+	opts := client.ListOptions{Namespace: namespace}
+	if err := opts.SetLabelSelector("name=memcached-operator"); err != nil {
+		return fmt.Errorf("failed to set list label selector: (%v)", err)
+	}
+	if err := opts.SetFieldSelector("status.phase=Running"); err != nil {
+		return fmt.Errorf("failed to set list field selector: (%v)", err)
+	}
+	err = f.Client.List(context.TODO(), &opts, &pods)
+	if err != nil {
+		return fmt.Errorf("failed to get pods: (%v)", err)
+	}
+	podName := ""
+	if len(pods.Items) > 1 {
+		// If we got more than one pod, get leader pod name.
+		leader, err := verifyLeader(t, namespace, f)
+		if err != nil {
+			return err
+		}
+		podName = leader.Name
+	}
+	if podName == "" {
+		podName = pods.Items[0].Name
+	}
+
+	// Get metrics data
+	request := proxyViaPod(f.KubeClient, namespace, podName, "8383", "/metrics")
+	response, err := request.DoRaw()
+	if err != nil {
+		return fmt.Errorf("failed to get response from metrics: %v", err)
+	}
+
+	// Make sure metrics are present
+	if len(response) == 0 {
+		return fmt.Errorf("metrics body is empty")
+	}
+
+	// Perform prometheus metrics lint checks
+	l := promlint.New(bytes.NewReader(response))
+	problems, err := l.Lint()
+	if err != nil {
+		return fmt.Errorf("failed to lint metrics: %v", err)
+	}
+	// TODO(lili): Change to 0, when we upgrade to 1.14.
+	// currently there is a problem with one of the metrics in upstream Kubernetes:
+	// `workqueue_longest_running_processor_microseconds`.
+	// This has been fixed in 1.14 release.
+	if len(problems) > 1 {
+		return fmt.Errorf("found problems with metrics: %#+v", problems)
+	}
+
+	return nil
+}
+
+func proxyViaPod(kubeClient kubernetes.Interface, namespace, podName, podPortName, path string) *rest.Request {
+	return kubeClient.
+		CoreV1().
+		RESTClient().
+		Get().
+		Namespace(namespace).
+		Resource("pods").
+		SubResource("proxy").
+		Name(fmt.Sprintf("%s:%s", podName, podPortName)).
+		Suffix(path)
 }
