@@ -2,6 +2,8 @@
 
 ### Added
 
+- New flags for [`operator-sdk new --type=helm`](https://github.com/operator-framework/operator-sdk/blob/master/doc/sdk-cli-reference.md#new), which can be used to populate the project with an existing chart. ([#949](https://github.com/operator-framework/operator-sdk/pull/949))
+
 ### Changed
 
 ### Deprecated
