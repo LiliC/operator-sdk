@@ -590,6 +590,7 @@ func memcachedMetricsTest(t *testing.T, f *framework.Framework, ctx *framework.T
 	}
 
 	// Make sure metrics Service exists
+	//
 	s := v1.Service{}
 	err = f.Client.Get(context.TODO(), types.NamespacedName{Name: operatorName, Namespace: namespace}, &s)
 	if err != nil {
