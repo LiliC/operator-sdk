@@ -47,6 +47,7 @@ import (
 
 	"github.com/example-inc/app-operator/pkg/apis"
 	"github.com/example-inc/app-operator/pkg/controller"
+	operatormetrics "github.com/example-inc/app-operator/pkg/metrics"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
@@ -62,8 +63,9 @@ import (
 
 // Change below variables to serve metrics on different host or port.
 var (
-	metricsHost       = "0.0.0.0"
-	metricsPort int32 = 8383
+	metricsHost               = "0.0.0.0"
+	metricsPort         int32 = 8383
+	operatorMetricsPort int32 = 8686
 )
 var log = logf.Log.WithName("cmd")
 
@@ -110,6 +112,11 @@ func main() {
 	}
 
 	ctx := context.TODO()
+
+	// Start serving operator specific metrics.
+	if err := operatormetrics.ServeOperatorSpecificMetrics(cfg, metricsHost, operatorMetricsPort); err != nil {
+		log.Error(err, "")
+	}
 
 	// Become the leader before proceeding
 	err = leader.Become(ctx, "app-operator-lock")

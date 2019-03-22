@@ -87,6 +87,10 @@ required = [
   name = "github.com/coreos/prometheus-operator"
   version = "=v0.26.0"
 
+[[constraint]]
+  name = "k8s.io/kube-state-metrics"
+  branch = "master"
+
 [[override]]
   name = "sigs.k8s.io/controller-runtime"
   version = "=v0.1.10"
@@ -101,6 +105,10 @@ required = [
   go-tests = true
   non-go = true
 
+  [[prune.project]]
+    name = "k8s.io/kube-state-metrics"
+    unused-packages = true
+  
   [[prune.project]]
     name = "k8s.io/code-generator"
     non-go = false
