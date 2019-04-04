@@ -52,7 +52,7 @@ func (c *Client) ClientFor(apiVersion, kind, namespace string) (dynamic.Namespac
 
 	gv, err := schema.ParseGroupVersion(apiResourceList.GroupVersion)
 	if err != nil {
-		return nil, errors.Wrapf(err, "parsing GroupVersion failed %s", apiResourceList.GroupVersion)
+		return nil, errors.Wrapf(err, "parsing GroupVersion %s failed", apiResourceList.GroupVersion)
 	}
 
 	gvr := schema.GroupVersionResource{
@@ -89,13 +89,14 @@ func (c *Client) getAPIResource(apiVersion, kind string) (*metav1.APIResourceLis
 }
 
 func newForConfig(groupVersion string, c *rest.Config) (dynamic.Interface, error) {
-	config := *c
-	err := setConfigDefaults(groupVersion, &config)
+	config := rest.CopyConfig(c)
+
+	err := setConfigDefaults(groupVersion, config)
 	if err != nil {
 		return nil, err
 	}
 
-	return dynamic.NewForConfig(&config)
+	return dynamic.NewForConfig(config)
 }
 
 func setConfigDefaults(groupVersion string, config *rest.Config) error {

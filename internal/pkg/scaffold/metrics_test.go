@@ -48,11 +48,12 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 )
 
-var log = logf.Log.WithName("metrics")
-var resource = "app.example.com/v1alpha1"
-var kind = "AppService"
-var metricName = "appservice_info"
 var (
+	log        = logf.Log.WithName("metrics")
+	resource   = "app.example.com/v1alpha1"
+	kind       = "AppService"
+	metricName = "appservice_info"
+
 	MetricFamilies = []ksmetric.FamilyGenerator{
 		ksmetric.FamilyGenerator{
 			Name: metricName,

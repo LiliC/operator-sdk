@@ -20,7 +20,10 @@ import (
 	"github.com/operator-framework/operator-sdk/internal/pkg/scaffold/input"
 )
 
-const MetricsFile = "metrics.go"
+const (
+	metricsFile = "metrics.go"
+	metricsDir  = PkgDir + filePathSep + "metrics"
+)
 
 type Metrics struct {
 	input.Input
@@ -31,7 +34,7 @@ type Metrics struct {
 
 func (s *Metrics) GetInput() (input.Input, error) {
 	if s.Path == "" {
-		s.Path = filepath.Join(MetricsDir, MetricsFile)
+		s.Path = filepath.Join(metricsDir, metricsFile)
 	}
 	s.TemplateBody = metricsPkgTemplate
 	return s.Input, nil
@@ -48,12 +51,13 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 )
 
-var log = logf.Log.WithName("metrics")
-var resource = "{{ .Resource.APIVersion }}"
-var kind = "{{ .Resource.Kind }}"
-var metricName = "{{ .Resource.LowerKind }}_info"
 var (
-    MetricFamilies = []ksmetric.FamilyGenerator{
+	log        = logf.Log.WithName("metrics")
+	resource   = "{{ .Resource.APIVersion }}"
+	kind       = "{{ .Resource.Kind }}"
+	metricName = "{{ .Resource.LowerKind }}_info"
+
+	MetricFamilies = []ksmetric.FamilyGenerator{
         ksmetric.FamilyGenerator{
             Name: metricName,
             Type: ksmetric.Gauge,

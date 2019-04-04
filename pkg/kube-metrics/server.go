@@ -60,6 +60,8 @@ type metricHandler struct {
 
 func (m *metricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	resHeader := w.Header()
+	// 0.0.4 is the exposition format version of prometheus
+	// https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format
 	resHeader.Set("Content-Type", `text/plain; version=`+"0.0.4")
 
 	for _, c := range m.collectors {
