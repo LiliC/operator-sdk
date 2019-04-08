@@ -57,7 +57,7 @@
 
 [[constraint]]
   name = "k8s.io/kube-state-metrics"
-  branch = "master"
+  version = "v1.6.0-rc.0"
 
 # We need overrides for the following imports because dep can't resolve them
 # correctly. The easiest way to get this right is to use the versions that

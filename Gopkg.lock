@@ -1508,8 +1508,7 @@
   revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
 
 [[projects]]
-  branch = "master"
-  digest = "1:04720d6b5a2443d6855bf4a28abad28201ec9b794cbb587272c1b9a7c1fcc966"
+  digest = "1:584e35289f5869d56bea9469d4de6f96758a3276125bb3e7b2c41bd65cb5a226"
   name = "k8s.io/kube-state-metrics"
   packages = [
     "pkg/collector",
@@ -1517,7 +1516,8 @@
     "pkg/metrics_store",
   ]
   pruneopts = "NUT"
-  revision = "907c52650a35e0c5e4fe9c8abfd620de03f37c4d"
+  revision = "d7b8a74b2ba1cbabb26a7dfdd7bd0d65f2724a9e"
+  version = "v1.6.0-rc.0"
 
 [[projects]]
   digest = "1:c4633d96d5a84297fe4b7045060034c6f219d9a18bcd53b88bd560bdf976194f"

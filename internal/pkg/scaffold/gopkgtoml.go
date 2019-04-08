@@ -97,7 +97,7 @@ required = [
 
 [[constraint]]
   name = "k8s.io/kube-state-metrics"
-  branch = "master"
+  version = "v1.6.0-rc.0"
 
 [[override]]
   name = "sigs.k8s.io/controller-runtime"
