@@ -79,22 +79,10 @@ var (
 	}
 )
 
-func ServeOperatorSpecificMetrics(cfg *rest.Config, host string, port int32) error {
-	uc := kubemetrics.NewForConfig(cfg)
-	// By default the current namespace will be detected and used to create metrics.
-	// Add to the namespaces to include any other namespaces.
-	namespaces := []string{}
-
-	c, err := kubemetrics.NewCollector(uc, namespaces, resource, kind, MetricFamilies)
+func ServeOperatorSpecificMetrics(cfg *rest.Config, ns, host string, port int32) error {
+	err := ksmetric.ServeOperatorSpecificMetrics(cfg, ns, host, port, MetricFamilies, resource, kind, )
 	if err != nil {
-		if err == k8sutil.ErrNoNamespace {
-			log.Info("Skipping operator specific metrics; not running in a cluster.")
-			return nil
-		}
 		return err
 	}
-
-	go kubemetrics.ServeMetrics(c, host, port)
-	return nil
 }
 `
