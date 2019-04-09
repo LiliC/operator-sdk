@@ -31,7 +31,7 @@ type Client struct {
 	cfg *rest.Config
 }
 
-func NewForConfig(cfg *rest.Config) *Client {
+func NewClientForConfig(cfg *rest.Config) *Client {
 	c := &Client{
 		cfg: cfg,
 	}

@@ -29,10 +29,10 @@ import (
 	metricsstore "k8s.io/kube-state-metrics/pkg/metrics_store"
 )
 
-// NewCollector returns a collection of metrics in the namespaces provided, per the api/kind resource.
+// NewCollectors returns collections of metrics in the namespaces provided, per the api/kind resource.
 // The metrics are registered in the custom generateStore function that needs to be defined.
-// Current operators namespace will be added to the passed namespaces.
-func NewCollector(uc *Client,
+// Current operators namespace will be added to the passed namespaces if it is not present.
+func NewCollectors(uc *Client,
 	namespaces []string,
 	api string,
 	kind string,

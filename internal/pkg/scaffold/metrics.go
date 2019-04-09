@@ -80,7 +80,7 @@ var (
 )
 
 func ServeOperatorSpecificMetrics(cfg *rest.Config, ns, host string, port int32) error {
-	err := ksmetric.ServeOperatorSpecificMetrics(cfg, ns, host, port, MetricFamilies, resource, kind, )
+	err := ksmetric.ServeOperatorSpecificMetrics(cfg, ns, host, port, MetricFamilies, resource, kind)
 	if err != nil {
 		return err
 	}
