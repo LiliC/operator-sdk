@@ -20,6 +20,7 @@ import (
 	"k8s.io/client-go/rest"
 	kcollector "k8s.io/kube-state-metrics/pkg/collector"
 	ksm "k8s.io/kube-state-metrics/pkg/metric"
+	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 )
 
 var log = logf.Log.WithName("kubemetrics")
@@ -32,7 +33,7 @@ type KubeMetrics struct {
 
 // ServeCRMetrics generates CR specific metrics.
 // It starts serving collections of those metrics on given host and port.
-func ServeCRMetrics(cfg *rest.Config, ns []string, kubeMetrics []KubeMetrics, host string, port int32) error {
+func ServeCRMetrics(cfg *rest.Config, ns []string, kms []KubeMetrics, host string, port int32) error {
 	// Get unstructured client.
 	uc := NewClientForConfig(cfg)
 
@@ -41,9 +42,9 @@ func ServeCRMetrics(cfg *rest.Config, ns []string, kubeMetrics []KubeMetrics, ho
 	// loop through them and create new collectors for all of them.
 
 	var collectors [][]*kcollector.Collector
-	for km := range kubeMetrics {
+	for _, km := range kms {
 		// Generate collector based on the resource, kind and the metric family.
-		c, err := NewCollector(uc, ns, km.Resource, km.Kind, km.MetricFamilies)
+		c, err := NewCollectors(uc, ns, km.Resource, km.Kind, *km.MetricFamilies)
 		if err != nil {
 			if err == k8sutil.ErrNoNamespace {
 				log.Info("Skipping operator specific metrics; not running in a cluster.")
@@ -62,8 +63,8 @@ func ServeCRMetrics(cfg *rest.Config, ns []string, kubeMetrics []KubeMetrics, ho
 // NewKubeMetrics creates and populates a new KubeMetrics struct.
 func NewKubeMetrics(resource, kind string, mf *[]ksm.FamilyGenerator) KubeMetrics {
 	return KubeMetrics{
-		Resource:        resource,
-		Kind:            kind,
-		MetricsFamilies: mf,
+		Resource:       resource,
+		Kind:           kind,
+		MetricFamilies: mf,
 	}
 }

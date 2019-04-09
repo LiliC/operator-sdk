@@ -16,7 +16,7 @@ package kubemetrics
 
 import (
 	"fmt"
-	"log"
+	logg "log"
 	"net"
 	"net/http"
 
@@ -28,7 +28,7 @@ const (
 	healthzPath = "/healthz"
 )
 
-func ServeMetrics(collectors []*kcollector.Collector, host string, port int32) {
+func ServeMetrics(collectors [][]*kcollector.Collector, host string, port int32) {
 	listenAddress := net.JoinHostPort(host, fmt.Sprint(port))
 	mux := http.NewServeMux()
 	// Add metricsPath
@@ -51,11 +51,11 @@ func ServeMetrics(collectors []*kcollector.Collector, host string, port int32) {
              </body>
              </html>`))
 	})
-	log.Fatal(http.ListenAndServe(listenAddress, mux))
+	logg.Fatal(http.ListenAndServe(listenAddress, mux))
 }
 
 type metricHandler struct {
-	collectors []*kcollector.Collector
+	collectors [][]*kcollector.Collector
 }
 
 func (m *metricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -63,8 +63,9 @@ func (m *metricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 0.0.4 is the exposition format version of prometheus
 	// https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format
 	resHeader.Set("Content-Type", `text/plain; version=`+"0.0.4")
-
-	for _, c := range m.collectors {
-		c.Collect(w)
+	for _, collectors := range m.collectors {
+		for _, c := range collectors {
+			c.Collect(w)
+		}
 	}
 }
